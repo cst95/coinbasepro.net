@@ -4,6 +4,6 @@ namespace CoinbasePro.Authentication
 {
     public interface IAuthenticationHandler
     {
-        IRequest AddAuthenticationHeaders(IRequest request);
+        void AddAuthenticationHeadersToRequest(IRequest request);
     }
 }
