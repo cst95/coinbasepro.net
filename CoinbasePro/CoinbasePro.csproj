@@ -1,7 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <Authors>Charlie Stokes</Authors>
+    <Company />
+    <Product />
   </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\Common\" />
+    <Folder Include="Models\Requests\" />
+  </ItemGroup>
 
 </Project>
