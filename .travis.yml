@@ -1,5 +1,6 @@
 language: csharp
 solution: CoinbasePro.sln
+mono: none
 dotnet: 2.1
 
 install:
