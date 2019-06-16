@@ -9,43 +9,47 @@ namespace CoinbasePro.Tests
 {
     public class AuthenticationHandlerShould
     {
-        [Fact]
-        public void AddAccesKeyHeaderToRequest()
-        {
-            CheckRequestForHeader("CB-ACCESS-KEY");
-        }
 
-        [Fact]
-        public void AddAccesSignatureHeaderToRequest()
-        {
-            CheckRequestForHeader("CB-ACCESS-SIGN");
-        }
+        private readonly AuthenticationHandler _subjectUnderTest;
+        private readonly Request _request;
 
-        [Fact]
-        public void AddTimestampHeaderToRequest()
-        {
-            CheckRequestForHeader("CB-ACCESS-TIMESTAMP");
-        }
 
-        [Fact]
-        public void AddPassphraseHeaderToRequest()
+        public AuthenticationHandlerShould()
         {
-            CheckRequestForHeader("CB-ACCESS-PASSPHRASE");
-        }
+            _subjectUnderTest = new AuthenticationHandler("test", "test", "test");
 
-        private void CheckRequestForHeader(string headerKey)
-        {
-            AuthenticationHandler sut = new AuthenticationHandler("test", "test", "test");
-            Request request = new Request
+            _request = new Request
             {
                 Headers = new Dictionary<string, string>(),
                 Endpoint = new Uri("/products", UriKind.Relative),
                 Method = HttpMethod.Get
             };
 
-            sut.AddAuthenticationHeadersToRequest(request);
+            _subjectUnderTest.AddAuthenticationHeadersToRequest(_request);
+        }
 
-            Assert.Contains(headerKey, request.Headers.Keys);
+        [Fact]
+        public void AddAccesKeyHeaderToRequest()
+        {
+            Assert.Contains("CB-ACCESS-KEY", _request.Headers.Keys);
+        }
+
+        [Fact]
+        public void AddAccesSignatureHeaderToRequest()
+        {
+            Assert.Contains("CB-ACCESS-SIGN", _request.Headers.Keys);
+        }
+
+        [Fact]
+        public void AddTimestampHeaderToRequest()
+        {
+            Assert.Contains("CB-ACCESS-TIMESTAMP", _request.Headers.Keys);
+        }
+
+        [Fact]
+        public void AddPassphraseHeaderToRequest()
+        {
+            Assert.Contains("CB-ACCESS-PASSPHRASE", _request.Headers.Keys);
         }
     }
 }
