@@ -1,6 +1,7 @@
 ﻿using CoinbasePro.Http;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -19,16 +20,6 @@ namespace CoinbasePro.Authentication
             _secret = secret;
         }
 
-        public void AddAuthenticationHeadersToRequest(IRequest request)
-        {
-            var timestamp = UnixTimestamp;
-
-            AddAccessKeyHeaderToRequest(request);
-            AddAccessPassphraseHeaderToRequest(request);
-            AddTimestampHeaderToRequest(request, timestamp);
-            AddAccessSignHeaderToRequest(request, timestamp);
-        }
-
         private long UnixTimestamp
         {
             get => DateTimeOffset.UtcNow.ToUnixTimeSeconds();
@@ -41,6 +32,49 @@ namespace CoinbasePro.Authentication
                 string hmacKey = Base64DecodeSecret(_secret);
                 return Encoding.UTF8.GetBytes(hmacKey);
             }
+        }
+
+        public Dictionary<string, string> GetAuthenticationHeadersForRequest(IRequest request)
+        {
+            var headers = new Dictionary<string, string>();
+            var timestamp = UnixTimestamp;
+
+            headers = AddAccessKeyHeader(request, headers);
+            headers = AddAccessPassphraseHeader(request, headers);
+            headers = AddAccessSignHeader(request, timestamp, headers);
+            headers = AddTimestampHeader(request, timestamp, headers);
+
+            return headers;
+        }
+
+        private Dictionary<string,string> AddAccessSignHeader(IRequest request, long unixTimestamp, Dictionary<string,string> headers)
+        {
+            var hash = new HMACSHA256(HmacKey);
+            var preHashMessage = CalculatePreHashMessage(request, unixTimestamp);
+            var base64EncodedHash = Convert.ToBase64String(hash.ComputeHash(preHashMessage));
+
+            headers.Add(key: "CB-ACCESS-SIGN", value: base64EncodedHash);
+            return headers;
+        }
+
+        private Dictionary<string, string> AddAccessPassphraseHeader(IRequest request, Dictionary<string, string> headers)
+        {
+            headers.Add(key: "CB-ACCESS-PASSPHRASE", value: _passphrase);
+            return headers;
+        }
+
+        private Dictionary<string, string> AddTimestampHeader(IRequest request, long unixTimestamp, Dictionary<string, string> headers)
+        {
+            var timestamp = unixTimestamp.ToString();
+
+            headers.Add(key: "CB-ACCESS-TIMESTAMP", value: timestamp);
+            return headers;
+        }
+
+        private Dictionary<string, string> AddAccessKeyHeader(IRequest request, Dictionary<string, string> headers)
+        {
+            headers.Add(key: "CB-ACCESS-KEY", value: _apikey);
+            return headers;
         }
 
         private string Base64DecodeSecret(string secret)
@@ -59,33 +93,6 @@ namespace CoinbasePro.Authentication
             string preHashString = timestamp + method + requestPath + body;
 
             return Encoding.UTF8.GetBytes(preHashString);
-        }
-
-        private void AddAccessKeyHeaderToRequest(IRequest request)
-        {
-            request.Headers.Add(key: "CB-ACCESS-KEY", value: _apikey);
-        }
-
-        private void AddAccessSignHeaderToRequest(IRequest request, long unixTimestamp)
-        {
-            var hash = new HMACSHA256(HmacKey);
-            var preHashMessage = CalculatePreHashMessage(request, unixTimestamp);
-
-            var base64EncodedHash = Convert.ToBase64String(hash.ComputeHash(preHashMessage));
-
-            request.Headers.Add("CB-ACCESS-SIGN", base64EncodedHash);
-        }
-
-        private void AddAccessPassphraseHeaderToRequest(IRequest request)
-        {
-            request.Headers.Add("CB-ACCESS-PASSPHRASE", _passphrase);
-        }
-
-        private void AddTimestampHeaderToRequest(IRequest request, long unixTimestamp)
-        {
-            var timestamp = unixTimestamp.ToString();
-
-            request.Headers.Add("CB-ACCESS-TIMESTAMP", timestamp);
         }
     }
 }

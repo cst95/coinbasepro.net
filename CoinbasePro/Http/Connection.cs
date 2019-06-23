@@ -7,23 +7,16 @@ namespace CoinbasePro.Http
 {
     public class Connection : IConnection
     {
-        private readonly HttpClient _httpClient;
+        private readonly IHttpClient _httpClient;
 
-        public Connection(IAuthenticationHandler authenticationHandler)
+        public Connection(IAuthenticationHandler authenticationHandler, Uri baseApiUrl)
         {
-            _httpClient = new HttpClient();
+            _httpClient = new CustomHttpClient(authenticationHandler, baseApiUrl);
         }
 
-        public async Task<HttpResponseMessage> Get(Uri uri)
+        public Task<HttpResponseMessage> Get(IRequest request)
         {
-            var response = await _httpClient.SendAsync(new HttpRequestMessage
-            {
-                Method = HttpMethod.Get,
-                RequestUri = uri
-            });
-            
-            return response;
+            return _httpClient.SendAsync(request);
         }
-
     }
 }

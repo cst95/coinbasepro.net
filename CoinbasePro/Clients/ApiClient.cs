@@ -2,13 +2,13 @@
 
 namespace CoinbasePro.Clients
 {
-    public class ApiClient
+    public abstract class ApiClient
     {
-        protected ApiClient(IConnection connection)
+        protected ApiClient(IApiConnection apiConnection)
         {
-            Connection = connection;
+            ApiConnection = apiConnection;
         }
 
-        protected IConnection Connection { get; private set; }
+        protected IApiConnection ApiConnection { get; private set; } 
     }
 }

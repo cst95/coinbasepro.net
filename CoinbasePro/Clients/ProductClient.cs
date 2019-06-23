@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using CoinbasePro.Http;
 
@@ -6,14 +7,20 @@ namespace CoinbasePro.Clients
 {
     public class ProductClient : ApiClient, IProductClient
     {
-        public ProductClient(IConnection connection)
-            : base(connection)
+        public ProductClient(IApiConnection apiConnection)
+            : base(apiConnection)
         {}
 
-        public async Task<object> GetProducts()
+        public Task<HttpResponseMessage> GetProductsAsync()
         {
-            var url = new Uri("https://api.pro.coinbase.com/products");
-            return await Connection.Get(url);
+            var request = new Request
+            {
+                Method = HttpMethod.Get,
+                Endpoint = new Uri("/products", UriKind.Relative)
+            };
+
+
+            return ApiConnection.Get(request);
         }
     }
 }
