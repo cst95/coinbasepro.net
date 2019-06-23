@@ -70,7 +70,6 @@ namespace CoinbasePro.Authentication
         {
             var hash = new HMACSHA256(HmacKey);
             var preHashMessage = CalculatePreHashMessage(request, unixTimestamp);
-
             var base64EncodedHash = Convert.ToBase64String(hash.ComputeHash(preHashMessage));
 
             request.Headers.Add("CB-ACCESS-SIGN", base64EncodedHash);

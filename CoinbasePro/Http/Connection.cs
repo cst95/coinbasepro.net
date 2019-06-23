@@ -8,10 +8,12 @@ namespace CoinbasePro.Http
     public class Connection : IConnection
     {
         private readonly HttpClient _httpClient;
+        private readonly Uri _baseApiUrl;
 
-        public Connection(IAuthenticationHandler authenticationHandler)
+        public Connection(IAuthenticationHandler authenticationHandler, Uri baseApiUri)
         {
             _httpClient = new HttpClient();
+            _baseApiUrl = baseApiUri;
         }
 
         public async Task<HttpResponseMessage> Get(Uri uri)
@@ -24,6 +26,5 @@ namespace CoinbasePro.Http
             
             return response;
         }
-
     }
 }

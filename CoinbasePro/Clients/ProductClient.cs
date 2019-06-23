@@ -6,14 +6,14 @@ namespace CoinbasePro.Clients
 {
     public class ProductClient : ApiClient, IProductClient
     {
-        public ProductClient(IConnection connection)
-            : base(connection)
+        public ProductClient(IApiConnection apiConnection)
+            : base(apiConnection)
         {}
 
         public async Task<object> GetProducts()
         {
             var url = new Uri("https://api.pro.coinbase.com/products");
-            return await Connection.Get(url);
+            return await ApiConnection.Get(url);
         }
     }
 }
