@@ -1,9 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace CoinbasePro.Clients
 {
     public interface IProductClient
     {
-        Task<object> GetProducts();
+        Task<HttpResponseMessage> GetProducts();
     }
 }

@@ -1,10 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace CoinbasePro.Http
 {
     public interface IApiConnection
     {
+        Task<HttpResponseMessage> Get(Uri uri);
     }
 }
