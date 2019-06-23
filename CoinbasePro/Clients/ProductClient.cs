@@ -11,11 +11,16 @@ namespace CoinbasePro.Clients
             : base(apiConnection)
         {}
 
-        public Task<HttpResponseMessage> GetProducts()
+        public Task<HttpResponseMessage> GetProductsAsync()
         {
-            var endpoint = new Uri("/products", UriKind.Relative);
+            var request = new Request
+            {
+                Method = HttpMethod.Get,
+                Endpoint = new Uri("/products", UriKind.Relative)
+            };
 
-            return ApiConnection.Get(endpoint);
+
+            return ApiConnection.Get(request);
         }
     }
 }

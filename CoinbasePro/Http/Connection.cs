@@ -1,6 +1,5 @@
 ﻿using CoinbasePro.Authentication;
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -8,36 +7,16 @@ namespace CoinbasePro.Http
 {
     public class Connection : IConnection
     {
-        private readonly HttpClient _httpClient;
-        private readonly Uri _baseApiUrl;
-        private readonly IAuthenticationHandler _authenticationHandler;
+        private readonly IHttpClient _httpClient;
 
-        public Connection(IAuthenticationHandler authenticationHandler, Uri baseApiUri)
+        public Connection(IAuthenticationHandler authenticationHandler, Uri baseApiUrl)
         {
-            _httpClient = new HttpClient();
-            _httpClient.BaseAddress = baseApiUri;
-            _httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
-            _httpClient.DefaultRequestHeaders.Add("User-Agent", ".NET Framework Test Client");
-            _authenticationHandler = authenticationHandler;
+            _httpClient = new CustomHttpClient(authenticationHandler, baseApiUrl);
         }
 
-        public async Task<HttpResponseMessage> Get(Uri endpoint)
+        public Task<HttpResponseMessage> Get(IRequest request)
         {
-            var request = new Request
-            {
-                Method = HttpMethod.Get,
-                BaseUrl = _baseApiUrl,
-                Endpoint = endpoint,
-                Headers = new Dictionary<string, string>()
-            };
-
-            var httpRequest = new HttpRequestMessage(HttpMethod.Get, request.Endpoint);
-
-            var response = await _httpClient.SendAsync(httpRequest).ConfigureAwait(false);
-
-            return response;
-
-
+            return _httpClient.SendAsync(request);
         }
     }
 }

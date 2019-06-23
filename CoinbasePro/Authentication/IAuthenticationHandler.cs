@@ -1,9 +1,10 @@
 ﻿using CoinbasePro.Http;
+using System.Collections.Generic;
 
 namespace CoinbasePro.Authentication
 {
     public interface IAuthenticationHandler
     {
-        void AddAuthenticationHeadersToRequest(IRequest request);
+        Dictionary<string,string> GetAuthenticationHeadersForRequest(IRequest request);
     }
 }

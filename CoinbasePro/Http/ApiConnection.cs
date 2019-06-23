@@ -13,9 +13,9 @@ namespace CoinbasePro.Http
 
         public IConnection Connection { get; private set; }
 
-        public Task<HttpResponseMessage> Get(Uri uri)
+        public Task<HttpResponseMessage> Get(IRequest request)
         {
-            return Connection.Get(uri);
+            return Connection.Get(request);
         }
 
     }

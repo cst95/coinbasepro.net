@@ -5,6 +5,6 @@ namespace CoinbasePro.Clients
 {
     public interface IProductClient
     {
-        Task<HttpResponseMessage> GetProducts();
+        Task<HttpResponseMessage> GetProductsAsync();
     }
 }

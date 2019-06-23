@@ -21,8 +21,6 @@ namespace CoinbasePro
             Products = new ProductClient(apiConnection);
         }
 
-
-        public IApiConnection ApiConnection { get; set; }
         public IProductClient Products { get; set; }
     }
 }

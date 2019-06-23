@@ -9,47 +9,43 @@ namespace CoinbasePro.Tests
 {
     public class AuthenticationHandlerShould
     {
-
-        private readonly AuthenticationHandler _subjectUnderTest;
-        private readonly Request _request;
-
+        private readonly Dictionary<string, string> _authHeadersCreatedByAuthHandler;
 
         public AuthenticationHandlerShould()
         {
-            _subjectUnderTest = new AuthenticationHandler("test", "test", "test");
+            var subjectUnderTest = new AuthenticationHandler("test", "test", "test");
 
-            _request = new Request
+            var request = new Request
             {
-                Headers = new Dictionary<string, string>(),
                 Endpoint = new Uri("/products", UriKind.Relative),
                 Method = HttpMethod.Get
             };
 
-            _subjectUnderTest.AddAuthenticationHeadersToRequest(_request);
+            _authHeadersCreatedByAuthHandler = subjectUnderTest.GetAuthenticationHeadersForRequest(request);
         }
 
         [Fact]
         public void AddAccesKeyHeaderToRequest()
         {
-            Assert.Contains("CB-ACCESS-KEY", _request.Headers.Keys);
+            Assert.Contains("CB-ACCESS-KEY", _authHeadersCreatedByAuthHandler.Keys);
         }
 
         [Fact]
         public void AddAccesSignatureHeaderToRequest()
         {
-            Assert.Contains("CB-ACCESS-SIGN", _request.Headers.Keys);
+            Assert.Contains("CB-ACCESS-SIGN", _authHeadersCreatedByAuthHandler.Keys);
         }
 
         [Fact]
         public void AddTimestampHeaderToRequest()
         {
-            Assert.Contains("CB-ACCESS-TIMESTAMP", _request.Headers.Keys);
+            Assert.Contains("CB-ACCESS-TIMESTAMP", _authHeadersCreatedByAuthHandler.Keys);
         }
 
         [Fact]
         public void AddPassphraseHeaderToRequest()
         {
-            Assert.Contains("CB-ACCESS-PASSPHRASE", _request.Headers.Keys);
+            Assert.Contains("CB-ACCESS-PASSPHRASE", _authHeadersCreatedByAuthHandler.Keys);
         }
     }
 }
